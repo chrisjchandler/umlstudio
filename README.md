@@ -81,4 +81,6 @@ docker run -p 5000:5000 umlstudio
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
+![screengrab](umlstudio.png "Screengrab")
+
 
