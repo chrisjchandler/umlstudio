@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .relationship {
+            margin-bottom: 20px;
+        }
+        .relationship input {
+            margin-right: 10px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .uml-code {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>UML Code Generator</h1>
+        <form id="uml-form">
+            <div id="entity-groupings">
+                <div class="entity-group">
+                    <label for="entities_group_1">Entities (comma-separated):</label><br>
+                    <input type="text" id="entities_group_1" name="entities_group_1" required><br>
+                </div>
+            </div>
+            <button type="button" id="add-group-btn" class="btn">Add Entity Group</button><br>
+
+            <div id="relationships" class="relationship">
+                <div>
+                    <label for="relationship_source_1">Source Group:</label>
+                    <input type="text" id="relationship_source_1" name="relationship_source_1">
+                    <label for="relationship_target_1">Target Group:</label>
+                    <input type="text" id="relationship_target_1" name="relationship_target_1">
+                    <label for="action_1">Action:</label>
+                    <input type="text" id="action_1" name="action_1">
+                </div>
+            </div>
+            <button type="button" id="add-relationship-btn" class="btn">Add Relationship</button><br>
+            <button type="submit" class="btn">Generate UML</button>
+        </form>
+
+        <div id="uml-code" class="uml-code"></div>
+    </div>
+
+    <script>
+        document.getElementById('add-group-btn').addEventListener('click', function() {
+            var numGroups = document.querySelectorAll('.entity-group').length + 1;
+            var newGroup = document.createElement('div');
+            newGroup.classList.add('entity-group');
+            newGroup.innerHTML = '<label for="entities_group_' + numGroups + '">Entities (comma-separated):</label><br>' +
+                                 '<input type="text" id="entities_group_' + numGroups + '" name="entities_group_' + numGroups + '" required><br>';
+            document.getElementById('entity-groupings').appendChild(newGroup);
+        });
+
+        document.getElementById('add-relationship-btn').addEventListener('click', function() {
+            var numRelationships = document.querySelectorAll('.relationship div').length + 1;
+            var newRelationship = document.createElement('div');
+            newRelationship.innerHTML = '<label for="relationship_source_' + numRelationships + '">Source Group:</label>' +
+                                        '<input type="text" id="relationship_source_' + numRelationships + '" name="relationship_source_' + numRelationships + '">' +
+                                        '<label for="relationship_target_' + numRelationships + '">Target Group:</label>' +
+                                        '<input type="text" id="relationship_target_' + numRelationships + '" name="relationship_target_' + numRelationships + '">' +
+                                        '<label for="action_' + numRelationships + '">Action:</label>' +
+                                        '<input type="text" id="action_' + numRelationships + '" name="action_' + numRelationships + '">';
+            document.getElementById('relationships').appendChild(newRelationship);
+        });
+
+        document.getElementById('uml-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            fetch('/generate_uml', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('uml-code').innerText = data.uml_code;
+            });
+        });
+    </script>
+</body>
+</html>
